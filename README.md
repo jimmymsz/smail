@@ -26,6 +26,15 @@ class smail_func {
 		stmt.execute();
 		stmt.close();
 	}
+	public ResultSet Login(String email,String pass) throws SQLException{
+		String query = "Select Nama SET pass = ? WHERE Email = ? and pass= ?";
+		PreparedStatement stmt = conn.prepareStatement(query);
+		stmt.setString(1, email);
+		stmt.setString(2, pass);
+		ResultSet ans = stmt.executeQuery(query);
+		stmt.close();
+		return ans;
+	}
 	public void GantiPin(int pin,String id) throws SQLException{
 		String query = "UPDATE user SET PIN = ? WHERE ID = ?";
 		PreparedStatement stmt = conn.prepareStatement(query);
