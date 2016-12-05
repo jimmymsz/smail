@@ -1,4 +1,3 @@
-//Threading Code
 package smail;
 
 import java.sql.Connection;
@@ -17,6 +16,14 @@ class smail_func {
 	}
 	public boolean isConnected(){
 		return (conn!=null);
+	}
+	public void lupaPass(String id,int pin) throws SQLException{
+		String query = "select Pass from users WHERE ID = ? and PIN = ? ";
+		PreparedStatement stmt = conn.prepareStatement(query);
+		stmt.setString(1, id);
+		stmt.setInt(2, pin);
+		stmt.execute();
+		stmt.close();
 	}
 	public void GantiPass(String pass,String id) throws SQLException{
 		String query = "UPDATE user SET pass = ? WHERE ID = ?";
@@ -44,7 +51,7 @@ class smail_func {
 		stmt.close();
 	}
 	public void RegisUser(String mail,String nama, String pass, int pin) throws SQLException{
-		String query="INSERT INTO users(Email,Nama,Pass,Pin) VALUES(?,?,?,?)";
+		String query="INSERT INTO users(Email,Nama,Pass,PIN) VALUES(?,?,?,?)";
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, mail);
 		stmt.setString(2, nama);
@@ -164,5 +171,7 @@ class smail_func {
 		stmt.setString(3, Subjects);
 		stmt.setString(4, isi);
 		stmt.execute();
+	}
+	public static void main(String[] args){
 	}
 }
