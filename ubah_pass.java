@@ -47,30 +47,37 @@ public class Upass extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		boolean trig=true;
-		if(arg0.getSource()==submit){
-			if(Arrays.equals(pass.getPassword(),kon_pass.getPassword())&&pass.getPassword().length!=0){
-				//kirim data lewat networking
-				//data yang dikirim berupa password 
-				//return home
-				JOptionPane.showMessageDialog(null, "Password Changed");
-				setVisible(false);
-	        	dispose();
+		try{
+			boolean trig=true;
+			if(arg0.getSource()==submit){
+				if(Arrays.equals(pass.getPassword(),kon_pass.getPassword())&&pass.getPassword().length!=0){
+					//kirim data lewat networking
+					//data yang dikirim berupa password 
+					//return home
+					JOptionPane.showMessageDialog(null, "Password Changed");
+					setVisible(false);
+		        	dispose();
+				}
+				else{
+					if(!Arrays.equals(pass.getPassword(),kon_pass.getPassword())){
+						JOptionPane.showMessageDialog(null, "Password and Password confirmation must same");
+					}
+					if(pass.getPassword().length==0){
+						JOptionPane.showMessageDialog(null, "Password cannot be empty");					
+					}
+					if(kon_pass.getPassword().length==0){
+						JOptionPane.showMessageDialog(null, "Password confirmation cannot be empty");					
+					}
+				}
 			}
 			else{
-				if(!Arrays.equals(pass.getPassword(),kon_pass.getPassword())){
-					JOptionPane.showMessageDialog(null, "Password and Password confirmation must same");
-				}
-				if(pass.getPassword().length==0){
-					JOptionPane.showMessageDialog(null, "Password cannot be null");					
-				}
-				if(kon_pass.getPassword().length==0){
-					JOptionPane.showMessageDialog(null, "Password confirmation cannot be null");					
-				}
+				new Home();
+				setVisible(false);
+				dispose();
 			}
 		}
-		else{
-			//return home
+		catch(Exception e){
+			System.out.println(e);
 		}
 	}
 }
