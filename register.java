@@ -68,58 +68,71 @@ public class register extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		boolean trig=true;
-		if(arg0.getSource()==submit){
-			int a=mail.getText().length();
-			String mails=mail.getText();
-			for(int i=0 ; i <a;i++){
-				if(mails.charAt(i)=='@'){
-					trig=false;
-					break;
+		try{
+			smail_func dbn = new smail_func();
+			boolean trig=true;
+			if(arg0.getSource()==submit){
+				int a=mail.getText().length();
+				String mails=mail.getText();
+				for(int i=0 ; i <a;i++){
+					if(mails.charAt(i)=='@'){
+						trig=false;
+						break;
+					}
 				}
-			}
-			if(!trig){
-				JOptionPane.showMessageDialog(null, "You can't use two @ in one email");
-			}
-			else{
-				if(!mail.getText().equals("") && !nama.getText().equals("")&&Arrays.equals(pass.getPassword(),kon_pass.getPassword())&&Arrays.equals(pin.getPassword(),kon_pin.getPassword())&&pass.getPassword().length!=0&&pin.getPassword().length!=0){
-					//kirim data lewat networking
-					//data yang dikirim berupa mail.getText()+"@smail.com",nama.getText(),dll;
-					//return home
-					JOptionPane.showMessageDialog(null, "Register success");
-					setVisible(false);
-	        		dispose();
+				if(!trig){
+					JOptionPane.showMessageDialog(null, "You can't use two @ in one email");
 				}
 				else{
-					if(mail.getText().equals("")){
-						JOptionPane.showMessageDialog(null, "Email cannot be null");
+					if(!mail.getText().equals("") && !nama.getText().equals("")&&Arrays.equals(pass.getPassword(),kon_pass.getPassword())&&Arrays.equals(pin.getPassword(),kon_pin.getPassword())&&pass.getPassword().length!=0&&pin.getPassword().length!=0){
+						//kirim data lewat networking
+						//data yang dikirim berupa mail.getText()+"@smail.com",nama.getText(),dll;
+						//return home
+						String mailss= mail.getText();
+						mailss=mailss+"@smail.com";
+						String a1 = new String(pass.getPassword());
+						String a2 = new String(pin.getPassword());
+						dbn.RegisUser(mailss,nama.getText(),a1,Integer.parseInt(a2));
+						JOptionPane.showMessageDialog(null, "Register success");
+						setVisible(false);
+		        		dispose();
 					}
-					if(nama.getText().equals("")){
-						JOptionPane.showMessageDialog(null, "Name cannot be null");
-					}
-					if(!Arrays.equals(pass.getPassword(),kon_pass.getPassword())){
-						JOptionPane.showMessageDialog(null, "Password and Password confirmation must same");
-					}
-					if(!Arrays.equals(pin.getPassword(),kon_pin.getPassword())){
-						JOptionPane.showMessageDialog(null, "PIN and PIN confirmation must same");
-					}
-					if(pass.getPassword().length==0){
-						JOptionPane.showMessageDialog(null, "Password cannot be null");					
-					}
-					if(pin.getPassword().length==0){
-						JOptionPane.showMessageDialog(null, "PIN cannot be null");				
-					}
-					if(kon_pass.getPassword().length==0){
-						JOptionPane.showMessageDialog(null, "Password confirmation cannot be null");					
-					}
-					if(kon_pin.getPassword().length==0){
-						JOptionPane.showMessageDialog(null, "PIN confirmation cannot be null");				
+					else{
+						if(mail.getText().equals("")){
+							JOptionPane.showMessageDialog(null, "Email cannot be empty");
+						}
+						if(nama.getText().equals("")){
+							JOptionPane.showMessageDialog(null, "Name cannot be empty");
+						}
+						if(!Arrays.equals(pass.getPassword(),kon_pass.getPassword())){
+							JOptionPane.showMessageDialog(null, "Password and Password confirmation must same");
+						}
+						if(!Arrays.equals(pin.getPassword(),kon_pin.getPassword())){
+							JOptionPane.showMessageDialog(null, "PIN and PIN confirmation must same");
+						}
+						if(pass.getPassword().length==0){
+							JOptionPane.showMessageDialog(null, "Password cannot be empty");					
+						}
+						if(pin.getPassword().length==0){
+							JOptionPane.showMessageDialog(null, "PIN cannot be empty");				
+						}
+						if(kon_pass.getPassword().length==0){
+							JOptionPane.showMessageDialog(null, "Password confirmation cannot be empty");					
+						}
+						if(kon_pin.getPassword().length==0){
+							JOptionPane.showMessageDialog(null, "PIN confirmation cannot be empty");				
+						}
 					}
 				}
 			}
+			else{
+				//return home
+				new MainProgram();
+				dispose();
+			}
 		}
-		else{
-			//return home
+		catch(Exception e){
+			System.out.println(e);
 		}
 	}
 }
