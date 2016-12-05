@@ -47,30 +47,37 @@ public class UPIN extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		boolean trig=true;
-		if(arg0.getSource()==submit){
-			if(Arrays.equals(pin.getPassword(),kon_pin.getPassword()) && pin.getPassword().length!=0){
-				//kirim data lewat networking
-				//data yang dikirim berupa pin
-				//return home
-				JOptionPane.showMessageDialog(null, "PIN Changed");
-				setVisible(false);
-	        	dispose();
+		try{
+			boolean trig=true;
+			if(arg0.getSource()==submit){
+				if(Arrays.equals(pin.getPassword(),kon_pin.getPassword()) && pin.getPassword().length!=0){
+					//kirim data lewat networking
+					//data yang dikirim berupa pin
+					//return home
+					JOptionPane.showMessageDialog(null, "PIN Changed");
+					setVisible(false);
+		        	dispose();
+				}
+				else{
+					if(!Arrays.equals(pin.getPassword(),kon_pin.getPassword())){
+						JOptionPane.showMessageDialog(null, "PIN and PIN confirmation must same");
+					}
+					if(pin.getPassword().length==0){
+						JOptionPane.showMessageDialog(null, "PIN cannot be empty");				
+					}
+					if(kon_pin.getPassword().length==0){
+						JOptionPane.showMessageDialog(null, "PIN confirmation cannot be empty");				
+					}
+				}
 			}
 			else{
-				if(!Arrays.equals(pin.getPassword(),kon_pin.getPassword())){
-					JOptionPane.showMessageDialog(null, "PIN and PIN confirmation must same");
-				}
-				if(pin.getPassword().length==0){
-					JOptionPane.showMessageDialog(null, "PIN cannot be null");				
-				}
-				if(kon_pin.getPassword().length==0){
-					JOptionPane.showMessageDialog(null, "PIN confirmation cannot be null");				
-				}
+				new Home();
+				setVisible(false);
+				dispose();
 			}
 		}
-		else{
-			//return home
+		catch(Exception e){
+			System.out.println(e);
 		}
 	}
 }
