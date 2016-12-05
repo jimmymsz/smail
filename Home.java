@@ -1,10 +1,13 @@
+package smail;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by Steven on 12/4/2016.
  */
-public class Home extends JFrame{
+public class Home extends JFrame implements ActionListener{
     JTabbedPane jtp = new JTabbedPane();
     JButton button_logout,button_ubahpin,button_ubahpass;
 
@@ -41,6 +44,26 @@ public class Home extends JFrame{
 
     public static void main(String[] args){
         new Home();
+    }
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        try{
+            if(arg0.getSource()==button_logout){
+                new MainProgram();
+                this.dispose();
+            }
+            else if(arg0.getSource()==button_ubahpass){
+                new Upass();
+                this.dispose();
+            }
+            else if(arg0.getSource()==button_ubahpin){
+                new UPIN();
+                this.dispose();
+            }
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
     }
 }
 
