@@ -15,7 +15,11 @@ public class UPIN extends JFrame implements ActionListener{
 	JButton submit,cancel;
 	JTextField mail,nama;
 	JPasswordField pass,kon_pass,pin,kon_pin;
-	UPIN(){
+	String emails;
+	String name;
+	UPIN(String mailz,String namas){
+		name=namas;
+		emails=mailz;
 		setTitle("Password Change");
         setSize(420, 195);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -54,7 +58,11 @@ public class UPIN extends JFrame implements ActionListener{
 					//kirim data lewat networking
 					//data yang dikirim berupa pin
 					//return home
+					String pins = new String(pin.getPassword());
+					smail_func func = new smail_func();
+					func.GantiPin(Integer.parseInt(pins), emails);
 					JOptionPane.showMessageDialog(null, "PIN Changed");
+					new Home(emails,name);
 					setVisible(false);
 		        	dispose();
 				}
@@ -71,7 +79,7 @@ public class UPIN extends JFrame implements ActionListener{
 				}
 			}
 			else{
-				new Home();
+				new Home(emails,name);
 				setVisible(false);
 				dispose();
 			}
