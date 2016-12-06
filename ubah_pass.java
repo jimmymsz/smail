@@ -15,7 +15,11 @@ public class Upass extends JFrame implements ActionListener{
 	JButton submit,cancel;
 	JTextField mail,nama;
 	JPasswordField pass,kon_pass,pin,kon_pin;
-	Upass(){
+	String emails;
+	String name;
+	Upass(String mailz,String namas){
+		name=namas;
+		emails=mailz;
 		setTitle("Password Change");
         setSize(420, 195);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -55,6 +59,7 @@ public class Upass extends JFrame implements ActionListener{
 					//data yang dikirim berupa password 
 					//return home
 					JOptionPane.showMessageDialog(null, "Password Changed");
+					new Home(emails,name);
 					setVisible(false);
 		        	dispose();
 				}
@@ -71,7 +76,7 @@ public class Upass extends JFrame implements ActionListener{
 				}
 			}
 			else{
-				new Home();
+				new Home(emails,name);
 				setVisible(false);
 				dispose();
 			}
