@@ -62,8 +62,7 @@ public class MainProgram extends JFrame implements ActionListener {
             	String email = textField_email.getText();
             	String pass = new String(passwordField_pass.getPassword());
             	data = func.Login(email,pass);
-                //new Home(data.elementAt(1).toString(),data.elementAt(0).toString());
-                new Home()
+                new Home(data.elementAt(1).toString(),data.elementAt(0).toString());
                 this.dispose();
             }
             else if(arg0.getSource()==button_fpass){
