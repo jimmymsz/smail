@@ -10,6 +10,8 @@ import java.util.*;
 
 class smail_func {
 	private Connection conn;
+	Statement stmt = null;
+
 	public smail_func() throws Exception{
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smail","root","");
@@ -18,36 +20,18 @@ class smail_func {
 		return (conn!=null);
 	}
 	public void lupaPass(String id,int pin) throws SQLException{
-		String query = "select Pass from users WHERE ID = ? and PIN = ? ";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setString(1, id);
-		stmt.setInt(2, pin);
-		stmt.execute();
+		String query = "select Pass from users WHERE Email = '"+id+"' and PIN = '"+pin+"'";
+		stmt.executeQuery(query);
 		stmt.close();
 	}
 	public void GantiPass(String pass,String id) throws SQLException{
-		String query = "UPDATE user SET pass = ? WHERE ID = ?";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setString(1, pass);
-		stmt.setString(2, id);
-		stmt.execute();
+		String query = "UPDATE user SET pass = '"+pass+"' WHERE Email = '"+id+"'";
+		stmt.executeQuery(query);
 		stmt.close();
-	}
-	public ResultSet Login(String email,String pass) throws SQLException{
-		String query = "Select Nama SET pass = ? WHERE Email = ? and pass= ?";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setString(1, email);
-		stmt.setString(2, pass);
-		ResultSet ans = stmt.executeQuery(query);
-		stmt.close();
-		return ans;
 	}
 	public void GantiPin(int pin,String id) throws SQLException{
-		String query = "UPDATE user SET PIN = ? WHERE ID = ?";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setInt(1, pin);
-		stmt.setString(2, id);
-		stmt.execute();
+		String query = "UPDATE user SET PIN = '"+pin+"' WHERE Email = '"+id+"'";
+		stmt.executeQuery(query);
 		stmt.close();
 	}
 	public void RegisUser(String mail,String nama, String pass, int pin) throws SQLException{
@@ -71,11 +55,8 @@ class smail_func {
 		stmt.close();
 	}
 	public Vector<Vector<Object>> selectEmail(String id)throws SQLException{
-		String query = "SELECT * FROM mail WHERE ID_Pengirim = ?";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setString(1, id);
+		String query = "SELECT * FROM mail WHERE ID_Pengirim = '"+id+"'";
 		ResultSet rs=stmt.executeQuery(query);
-		System.out.println("");
 		Vector<Vector<Object>> datass = new Vector<Vector<Object>>();
 		while(rs.next()){
 			Vector<Object> e = new Vector<Object>();
@@ -89,11 +70,24 @@ class smail_func {
 		stmt.close();
 		return datass;
 	}
+
+	public Vector<Object> Login(String email,String pass) throws SQLException{
+		stmt=conn.createStatement();
+		String query = "Select Nama, Email from users WHERE Email = '"+ email +"' And pass= '"+ pass +"'";
+		ResultSet rs=stmt.executeQuery(query);
+		Vector<Object> ans = new Vector<Object>();
+		while(rs.next()){
+			ans.add(rs.getString("Nama"));
+			ans.add(rs.getString("Email"));
+		}
+		stmt.close();
+		return ans;
+	}
 	public Vector<Vector<Object>> searchEmailInbox(String id)throws SQLException{
 		String query = "SELECT * FROM books WHERE "
-				+ "(ID_Pengirim = ?)or(ID_Pengirim = ?)or(ID_Pengirim = ?)or(ID_Pengirim = ?)or"
-				+ "(Subject = ?)or(Subject = ?)or(Subject = ?)or(Subject = ?)or"
-				+ "(isi = ?)or(isi = ?)or(isi = ?)or(isi = ?)";
+				+ "(ID_Pengirim LIKE ?)or(ID_Pengirim LIKE ?)or(ID_Pengirim LIKE ?)or(ID_Pengirim LIKE ?)or"
+				+ "(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or"
+				+ "(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)";
 		String search1 = "%"+id;
 		String search2 = "%"+id+"%";
 		String search3 = id+"%";
@@ -128,9 +122,9 @@ class smail_func {
 	}
 	public Vector<Vector<Object>> searchEmailSent(String id)throws SQLException{
 		String query = "SELECT * FROM books WHERE "
-				+ "(ID_Penerima = ?)or(ID_Penerima = ?)or(ID_Penerima = ?)or(ID_Penerima = ?)or"
-				+ "(Subject = ?)or(Subject = ?)or(Subject = ?)or(Subject = ?)or"
-				+ "(isi = ?)or(isi = ?)or(isi = ?)or(isi = ?)";
+				+ "(ID_Penerima LIKE ?)or(ID_Penerima LIKE ?)or(ID_Penerima LIKE ?)or(ID_Penerima LIKE ?)or"
+				+ "(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or"
+				+ "(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)";
 		String search1 = "%"+id;
 		String search2 = "%"+id+"%";
 		String search3 = id+"%";
@@ -164,13 +158,8 @@ class smail_func {
 		return datass;
 	}
 	public void hapus(String ID_Penerima,String Subjects,String isi,String ID_Pengirim) throws SQLException{
-		String query = "DELETE FROM mail Where ID_Pengirim = ? and ID_Penerima = ?, and Subjects = ?, and isi = ?";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setString(1, ID_Pengirim);
-		stmt.setString(2, ID_Penerima);
-		stmt.setString(3, Subjects);
-		stmt.setString(4, isi);
-		stmt.execute();
+		String query = "DELETE FROM mail Where ID_Pengirim = '"+ID_Pengirim+"' and ID_Penerima = '"+ID_Penerima+"' and Subjects = '"+Subjects+"' and isi = '"+isi+"'";
+		stmt.executeQuery(query);
 	}
 	public static void main(String[] args){
 	}
