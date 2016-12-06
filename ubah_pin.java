@@ -52,6 +52,7 @@ public class UPIN extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		try{
+			smail_func func = new smail_func();
 			boolean trig=true;
 			if(arg0.getSource()==submit){
 				if(Arrays.equals(pin.getPassword(),kon_pin.getPassword()) && pin.getPassword().length!=0){
@@ -59,7 +60,6 @@ public class UPIN extends JFrame implements ActionListener{
 					//data yang dikirim berupa pin
 					//return home
 					String pins = new String(pin.getPassword());
-					smail_func func = new smail_func();
 					func.GantiPin(Integer.parseInt(pins), emails);
 					JOptionPane.showMessageDialog(null, "PIN Changed");
 					new Home(emails,name);
