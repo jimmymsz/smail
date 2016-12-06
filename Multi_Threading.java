@@ -19,19 +19,23 @@ class smail_func {
 	public boolean isConnected(){
 		return (conn!=null);
 	}
-	public void lupaPass(String id,int pin) throws SQLException{
+	public String lupaPass(String id,int pin) throws SQLException{
+		stmt=conn.createStatement();
 		String query = "select Pass from users WHERE Email = '"+id+"' and PIN = '"+pin+"'";
-		stmt.executeQuery(query);
+		String asd=stmt.executeQuery(query).toString();
 		stmt.close();
+		return asd;
 	}
 	public void GantiPass(String pass,String id) throws SQLException{
-		String query = "UPDATE user SET pass = '"+pass+"' WHERE Email = '"+id+"'";
-		stmt.executeQuery(query);
+		stmt=conn.createStatement();
+		String query = "UPDATE users SET pass = '"+pass+"' WHERE Email = '"+id+"'";
+		stmt.execute(query);
 		stmt.close();
 	}
 	public void GantiPin(int pin,String id) throws SQLException{
-		String query = "UPDATE user SET PIN = '"+pin+"' WHERE Email = '"+id+"'";
-		stmt.executeQuery(query);
+		stmt=conn.createStatement();
+		String query = "UPDATE users SET PIN = '"+pin+"' WHERE Email = '"+id+"'";
+		stmt.execute(query);
 		stmt.close();
 	}
 	public void RegisUser(String mail,String nama, String pass, int pin) throws SQLException{
@@ -84,7 +88,7 @@ class smail_func {
 		return ans;
 	}
 	public Vector<Vector<Object>> searchEmailInbox(String id)throws SQLException{
-		String query = "SELECT * FROM books WHERE "
+		String query = "SELECT * FROM mail WHERE "
 				+ "(ID_Pengirim LIKE ?)or(ID_Pengirim LIKE ?)or(ID_Pengirim LIKE ?)or(ID_Pengirim LIKE ?)or"
 				+ "(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or"
 				+ "(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)";
@@ -121,7 +125,7 @@ class smail_func {
 		return datass;
 	}
 	public Vector<Vector<Object>> searchEmailSent(String id)throws SQLException{
-		String query = "SELECT * FROM books WHERE "
+		String query = "SELECT * FROM mail WHERE "
 				+ "(ID_Penerima LIKE ?)or(ID_Penerima LIKE ?)or(ID_Penerima LIKE ?)or(ID_Penerima LIKE ?)or"
 				+ "(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or(Subject LIKE ?)or"
 				+ "(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)or(isi LIKE ?)";
@@ -158,8 +162,9 @@ class smail_func {
 		return datass;
 	}
 	public void hapus(String ID_Penerima,String Subjects,String isi,String ID_Pengirim) throws SQLException{
+		stmt=conn.createStatement();
 		String query = "DELETE FROM mail Where ID_Pengirim = '"+ID_Pengirim+"' and ID_Penerima = '"+ID_Penerima+"' and Subjects = '"+Subjects+"' and isi = '"+isi+"'";
-		stmt.executeQuery(query);
+		stmt.execute(query);
 	}
 	public static void main(String[] args){
 	}
