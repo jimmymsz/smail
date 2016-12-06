@@ -94,6 +94,7 @@ public class register extends JFrame implements ActionListener{
 						String a2 = new String(pin.getPassword());
 						dbn.RegisUser(mailss,nama.getText(),a1,Integer.parseInt(a2));
 						JOptionPane.showMessageDialog(null, "Register success");
+						new MainProgram();
 						setVisible(false);
 		        		dispose();
 					}
