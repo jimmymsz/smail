@@ -13,7 +13,6 @@ public class Home extends JFrame implements ActionListener{
     Home(String mail,String nama){
     	emails=mail;
     	name=nama;
-    	System.out.println(emails+" "+name);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JPanel panel2 = new JPanel(new GridLayout(1,3));
