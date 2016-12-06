@@ -52,12 +52,15 @@ public class Upass extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		try{
+			smail_func func = new smail_func();
 			boolean trig=true;
 			if(arg0.getSource()==submit){
 				if(Arrays.equals(pass.getPassword(),kon_pass.getPassword())&&pass.getPassword().length!=0){
 					//kirim data lewat networking
 					//data yang dikirim berupa password 
 					//return home
+					String a1 = new String(pass.getPassword());
+					func.GantiPass(a1, emails);
 					JOptionPane.showMessageDialog(null, "Password Changed");
 					new Home(emails,name);
 					setVisible(false);
