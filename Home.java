@@ -65,6 +65,9 @@ public class Home extends JFrame implements ActionListener{
             	new UPIN(emails,name);
                 this.dispose();
             }
+            else if(arg0.getSource()==searching){
+            	new Panelsearch(emails,searchField.getText());
+            }
         }
         catch (Exception e){
             System.out.println(e);
@@ -145,7 +148,7 @@ class Panel1 extends JPanel implements ActionListener{
 }
 
 class Panel2 extends JPanel implements ActionListener{
-    JButton button_delete;
+    JButton button_delete,open;
     Vector<Vector<Object>> data = new Vector<Vector<Object>>();
     String mail;
     String dumb1,dumb2,dumb3,dumb4,dumb5;
@@ -164,7 +167,9 @@ class Panel2 extends JPanel implements ActionListener{
 			e.printStackTrace();
 		}
     	JPanel panel12 = new JPanel(new GridLayout(2,1,5,5));
+    	JPanel panel123 = new JPanel(new GridLayout(1,2,5,5));
     	button_delete = new JButton("Delete");
+    	open = new JButton("Read");
         Vector<Object> colHeads = new Vector<Object>();
         colHeads.add("Email Penerima");
         colHeads.add("Subject");
@@ -183,12 +188,15 @@ class Panel2 extends JPanel implements ActionListener{
             }
         });
         panel12.add(jsp);
-        panel12.add(button_delete);
+        panel123.add(button_delete);
+        panel123.add(open);
+        panel12.add(panel123);
         add(panel12);
 //        button_panel.add(Box.createHorizontalGlue());
 //        button_panel.add(button_delete);
 //        button_panel.add(Box.createRigidArea(new Dimension(10,0)));
         button_delete.addActionListener(this);
+        open.addActionListener(this);
     }
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -201,7 +209,10 @@ class Panel2 extends JPanel implements ActionListener{
 				func.hapus(dumb1, dumb2, dumb3, mail);
 				revalidate();
 				repaint();
-	        }			
+	        }
+			else{
+				new Panel5(dumb2,dumb1,dumb3,mail);
+			}
 		}
     	catch (Exception e){
     		e.printStackTrace();
@@ -365,4 +376,67 @@ class Panel5 extends JFrame implements ActionListener{
 	}
 }
 
+class Panelsearch extends JFrame implements ActionListener{
+    JButton button_delete,open;
+    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+    String mail;
+    String dumb1,dumb2,dumb3,dumb4,dumb5;
+	public Panelsearch(String emails,String searchess){
+		mail=emails;
+//        JPanel table_panel = new JPanel();
+//        table_panel.setLayout(new BoxLayout(table_panel,BoxLayout.LINE_AXIS));
+//        JPanel button_panel = new JPanel();
+//        button_panel.setLayout(new BoxLayout(button_panel,BoxLayout.LINE_AXIS));
+//        button_panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		try{
+			smail_func a = new smail_func();
+			data = a.searchEmail(searchess,mail);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		setSize(800,600);
+        JPanel panel12 = new JPanel(new GridLayout(2,1,5,5));
+    	JPanel panel123 = new JPanel(new GridLayout(1,2,5,5));
+    	button_delete = new JButton("Delete");
+    	open = new JButton("Read");
+        Vector<Object> colHeads = new Vector<Object>();
+        colHeads.add("Email Penerima");
+        colHeads.add("Email Pengirim");
+        colHeads.add("Subject");
+        colHeads.add("Isi");
+        colHeads.add("Status");
+        colHeads.add("Waktu Kirim");
+        JTable table = new JTable(data, colHeads);
+        JScrollPane jsp = new JScrollPane(table);
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                dumb1=((table.getValueAt(table.getSelectedRow(), 0).toString()));
+                dumb2=((table.getValueAt(table.getSelectedRow(), 1).toString()));
+                dumb3=((table.getValueAt(table.getSelectedRow(), 2).toString()));
+                dumb4=((table.getValueAt(table.getSelectedRow(), 3).toString()));
+                dumb5=((table.getValueAt(table.getSelectedRow(), 4).toString()));
+            }
+        });
+        panel12.add(jsp);
+        panel123.add(open);
+        panel12.add(panel123);
+        add(panel12);
+        setVisible(true);
+//        button_panel.add(Box.createHorizontalGlue());
+//        button_panel.add(button_delete);
+//        button_panel.add(Box.createRigidArea(new Dimension(10,0)));
+        open.addActionListener(this);
+    }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		try{
+			new Panel5(dumb2,dumb1,dumb3,mail);
+		}
+    	catch (Exception e){
+    		e.printStackTrace();
+    	}
+	}
+}
 
