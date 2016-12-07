@@ -1,0 +1,466 @@
+import static spark.Spark.*;
+import spark.ModelAndView;
+import spark.template.velocity.VelocityTemplateEngine;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.IntSummaryStatistics;
+import java.util.concurrent.ExecutionException;
+
+
+
+
+
+
+
+
+
+
+
+public class MainProgram_server_server {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // SQL QUERY //////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+    public static final String DEFAULT_DRIVER_CLASS = "com.mysql.jdbc.Driver";
+    public static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/email";
+    private static final String DEFAULT_USERNAME = "root";
+    private static final String DEFAULT_PASSWORD = "";
+    public static final String FIND_USERS = "SELECT Email, Nama FROM email.users ";
+    private static final String BY_MAIL = "WHERE EMAIL = ? ";
+    public static final String FIND_MAIL = "SELECT Number, ID_Pengirim, ID_Penerima, Subjects, E_Status, Waktu_terima FROM email.mail ";
+    private static final String BY_ID_PENGIRIM_ID_PENERIMA = "WHERE ID_PENGIRIM = ? AND ID_PENERIMA = ? ";
+
+    public static final String FIND_USERS_ANY = "SELECT Email, Nama FROM email.users ";
+    public static final String BY_ANY_USER_WORD = "WHERE EMAIL LIKE ? ";
+    public static final String FIND_MAIL_ANY = "SELECT Number, ID_Pengirim, ID_Penerima, Subjects, E_Status, Waktu_terima FROM email.mail ";
+    public static final String BY_ANY_MAIL_WORD = "WHERE ID_PENGIRIM LIKE ? OR ID_PENERIMA LIKE ? OR SUBJECTS LIKE ? OR E_STATUS LIKE ? ";
+
+    public static final String INSERT_USERS = "INSERT INTO email.users VALUES (?, ?, ?, ?) ";
+    public static final String DELETE_USERS = "DELETE FROM email.users WHERE EMAIL = ? ";
+
+    public static final String INSERT_MAIL = "INSERT INTO email.mail(ID_Pengirim,ID_Penerima,Subjects,Isi,E_Status,Waktu_terima) VALUES(?,?,?,?,'unread',CURRENT_TIMESTAMP)";
+    public static final String DELETE_MAIL = "DELETE FROM email.mail WHERE NUMBER = ? ";
+
+    static ArrayList<ArrayList<String>> UsersList = new ArrayList<ArrayList<String>>();
+    static ArrayList<ArrayList<String>> taskList = new ArrayList<ArrayList<String>>();
+    static ArrayList<ArrayList<String>> taskList2 = new ArrayList<ArrayList<String>>();
+
+    static Connection connection = null;
+
+    public static Connection getConnection(String driverClass, String url, String username, String password) throws SQLException, ClassNotFoundException {
+        Class.forName(driverClass);
+        return DriverManager.getConnection(url, username, password);
+    }
+
+    public static void close(Connection connection) {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void close(Statement statement) {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void close(ResultSet resultSet) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //public static Users dispUsers(Connection connection) {
+    public static ArrayList<ArrayList<String>> dispUsers(Connection connection) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<ArrayList<String>> dispUsers = null;
+        try {
+            ps = connection.prepareStatement(FIND_USERS);
+            rs = ps.executeQuery();
+            dispUsers = new ArrayList<ArrayList<String>>();
+            while (rs.next()) {
+                ArrayList<String> temp = new ArrayList<String>();
+                temp.add(rs.getString("Email"));
+                temp.add(rs.getString("Nama"));
+                dispUsers.add(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MainProgram_server_server.close(rs);
+            MainProgram_server_server.close(ps);
+        }
+        return dispUsers;
+    }
+
+    //public static Mail dispMail(Connection connection) {
+    public static ArrayList<ArrayList<String>> dispMail(Connection connection) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<ArrayList<String>> dispMail = null;
+        try {
+            ps = connection.prepareStatement(FIND_MAIL);
+            rs = ps.executeQuery();
+            dispMail = new ArrayList<ArrayList<String>>();
+            while (rs.next()) {
+                ArrayList<String> temp = new ArrayList<String>();
+                temp.add(rs.getString("Number"));
+                temp.add(rs.getString("ID_Pengirim"));
+                temp.add(rs.getString("ID_Penerima"));
+                temp.add(rs.getString("Subjects"));
+                temp.add(rs.getString("E_Status"));
+                temp.add(rs.getString("Waktu_terima"));
+                dispMail.add(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MainProgram_server_server.close(rs);
+            MainProgram_server_server.close(ps);
+        }
+        return dispMail;
+    }
+
+    //public static Users findUsers(Connection connection, String name) {
+    public static ArrayList<ArrayList<String>> findUsers(Connection connection, String name) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<ArrayList<String>> findUsers = null;
+        name = '%' + name + '%';
+        try {
+            ps = connection.prepareStatement(FIND_USERS_ANY + BY_ANY_USER_WORD);
+            ps.setString(1, name);
+            //ps.setString(2, name);
+            rs = ps.executeQuery();
+            findUsers = new ArrayList<ArrayList<String>>();
+            while (rs.next()) {
+                ArrayList<String> temp = new ArrayList<String>();
+                temp.add(rs.getString("Email"));
+                temp.add(rs.getString("Nama"));
+                findUsers.add(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MainProgram_server_server.close(rs);
+            MainProgram_server.close(ps);
+        }
+        return findUsers;
+    }
+
+    //public static Mail findMail(Connection connection, String name, String name2) {
+    public static ArrayList<ArrayList<String>> findMail(Connection connection, String name) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<ArrayList<String>> findMail = null;
+        try {
+            ps = connection.prepareStatement(FIND_MAIL_ANY + BY_ANY_MAIL_WORD);
+            ps.setString(4, name + '%');
+            name = '%' + name + '%';
+            ps.setString(1, name);
+            ps.setString(2, name);
+            ps.setString(3, name);
+            rs = ps.executeQuery();
+            findMail = new ArrayList<ArrayList<String>>();
+            while (rs.next()) {
+                ArrayList<String> temp = new ArrayList<String>();
+                temp.add(rs.getString("Number"));
+                temp.add(rs.getString("ID_Pengirim"));
+                temp.add(rs.getString("ID_Penerima"));
+                temp.add(rs.getString("Subjects"));
+                temp.add(rs.getString("E_Status"));
+                temp.add(rs.getString("Waktu_terima"));
+                findMail.add(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MainProgram_server.close(rs);
+            MainProgram_server.close(ps);
+        }
+        return findMail;
+    }
+
+    private static void insertUsers(Connection connection, String nama, String nama2, String nama3, int nama4) throws SQLException {
+        PreparedStatement ps = null;
+        ps = connection.prepareStatement(INSERT_USERS);
+        ps.setString(1, nama);
+        ps.setString(2, nama2);
+        ps.setString(3, nama3);
+        ps.setInt(4, nama4);
+        ps.execute();
+        ps.close();
+    }
+
+    private static void deleteUsers(Connection connection, String nama) throws SQLException {
+        PreparedStatement ps = null;
+        ps = connection.prepareStatement(DELETE_USERS);
+        ps.setString(1, nama);
+        ps.execute();
+        ps.close();
+    }
+
+    private static void insertMail(Connection connection, String nama, String nama2, String nama3, String nama4) throws SQLException {
+        PreparedStatement ps = null;
+        ps = connection.prepareStatement(INSERT_MAIL);
+        ps.setString(1, nama);
+        ps.setString(2, nama2);
+        ps.setString(3, nama3);
+        ps.setString(4, nama4);
+        ps.execute();
+        ps.close();
+    }
+
+    private static void deleteMail(Connection connection, int nama) throws SQLException {
+        PreparedStatement ps = null;
+        ps = connection.prepareStatement(DELETE_MAIL);
+        ps.setInt(1, nama);
+        ps.execute();
+        ps.close();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MAIN AND WEB ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private static final String SESSION_NAME = "username";
+
+    public static void main(String[] args) {
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//NETWORKING + THREADING///////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        class Reversal extends Thread{
+            private Socket socket;
+            private String client;
+
+            Reversal(Socket s){
+                socket = s;
+                client = s.getRemoteSocketAddress().toString();
+                System.out.println("Incoming connection from " + client);
+
+            }
+
+            public void run(){
+                try{
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+
+                    ArrayList<ArrayList<String>> UsersList = new ArrayList<ArrayList<String>>();
+                    ArrayList<String> temp = new ArrayList<String>();
+                    temp.add("one");
+                    temp.add("two");
+                    temp.add("three");
+                    UsersList.add(temp);
+                    UsersList.add(temp);
+
+                    out.println("Hello! Welcome to the server.");;
+                    out.println("Enter a line with only a period to quit\n");;
+                    while (true){
+                        String request = in.readLine();
+                        if (request == null || request.equals("."))
+                            break;
+                        System.out.println("Reversal request for: " + request);
+                        String rev = request;
+                        rev = taskList.toString();
+                        out.println("Server replies \" " + rev + "\"");
+                    }
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+
+                }
+                finally{
+                    try{
+                        socket.close();
+                    }
+                    catch (IOException e){
+                        e.printStackTrace();
+                    }
+                    System.out.println("Close connection from " + client);
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        // WEB SERVER
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        //UsersList.add(taskList);
+        Map<String, Object> model = new HashMap<>();
+        try {
+            connection = MainProgram_server.getConnection(DEFAULT_DRIVER_CLASS, DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD);
+            System.out.println("dispUsers : " + dispUsers(connection));
+            System.out.println("dispMail : " + dispMail(connection));
+            System.out.println("findUsers : " + findUsers(connection, "dimas"));
+            System.out.println("findMail : " + findMail(connection, "calvin"));
+            taskList = dispUsers(connection);
+            taskList2 = dispMail(connection);
+
+            get("/admin", (request, response) -> {
+                model.put("taskList", taskList);
+                return new ModelAndView(model, "welcome.vm");
+            }, new VelocityTemplateEngine());
+
+            post("/admin", (request, response) -> {
+                String username = request.queryParams("usr");
+                String password = request.queryParams("pass");
+                if (username.equals("dimas") && password.equals(""))
+                    request.session().attribute(SESSION_NAME, username);
+                else
+                    response.redirect("/admin", 401);
+                response.redirect("/task");
+                return null;
+            });
+
+
+            get("/task", (request, response) -> {
+                String sesi = request.session().attribute(SESSION_NAME);
+                if (sesi == null)
+                    return null;
+                else {
+                    return new ModelAndView(model, "task.vm");
+                }
+                //return new ModelAndView(model, "task.vm");
+            }, new VelocityTemplateEngine());
+
+
+            get("/users", (request, response) -> {
+                String sesi = request.session().attribute(SESSION_NAME);
+                if (sesi == null)
+                    return null;
+                else {
+                    model.put("users", taskList);
+                    return new ModelAndView(model, "users.vm");
+                }
+                //return new ModelAndView(model, "task.vm");
+            }, new VelocityTemplateEngine());
+
+            post("find_users", (request, response) -> {
+                String temp = request.queryParams("d1");
+                Connection a = DriverManager.getConnection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD);
+                taskList = findUsers(a, temp);
+                response.redirect("/users");
+                return null;
+            });
+
+            post("insert_users", (request, response) -> {
+                String temp = request.queryParams("d1");
+                String temp2 = request.queryParams("d2");
+                String temp3 = request.queryParams("d3");
+                String temp4 = request.queryParams("d4");
+                temp = temp + "@smail.com";
+                Connection a = DriverManager.getConnection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD);
+                insertUsers(a, temp, temp2, temp3, Integer.parseInt(temp4));
+                taskList = dispUsers(a);
+                response.redirect("/users");
+                return null;
+            });
+
+            post("delete_users", (request, response) -> {
+                String temp = request.queryParams("d1");
+                Connection a = DriverManager.getConnection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD);
+                deleteUsers(a, temp);
+                taskList = dispUsers(a);
+                response.redirect("/users");
+                return null;
+            });
+
+            get("/mail", (request, response) -> {
+                String sesi = request.session().attribute(SESSION_NAME);
+                if (sesi == null)
+                    return null;
+                else {
+                    model.put("mail", taskList2);
+                    return new ModelAndView(model, "mail.vm");
+                }
+                //return new ModelAndView(model, "task.vm");
+            }, new VelocityTemplateEngine());
+
+            post("find_mail", (request, response) -> {
+                String temp = request.queryParams("d1");
+                Connection a = DriverManager.getConnection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD);
+                taskList2 = findMail(a, temp);
+                response.redirect("/mail");
+                return null;
+            });
+
+            post("insert_mail", (request, response) -> {
+                String sesi = request.session().attribute(SESSION_NAME);
+                String temp = request.queryParams("d1");
+                String temp2 = request.queryParams("d2");
+                String temp3 = request.queryParams("d3");
+                Connection a = DriverManager.getConnection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD);
+                insertMail(a, sesi, temp, temp2, temp3);
+                taskList2 = dispMail(a);
+                response.redirect("/mail");
+                return null;
+            });
+
+            post("delete_mail", (request, response) -> {
+                String temp = request.queryParams("d1");
+                Connection a = DriverManager.getConnection(DEFAULT_URL, DEFAULT_USERNAME, DEFAULT_PASSWORD);
+                deleteMail(a, Integer.parseInt(temp));
+                taskList2 = dispMail(a);
+                response.redirect("/mail");
+                return null;
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            MainProgram_server.close(connection);
+        }
+
+        // THREADING IMPLEMENT
+        //
+        try (ServerSocket listener = new ServerSocket(9010)) {
+            System.out.println("The server is running...");
+            while (true) {
+                Socket s = listener.accept();
+                Thread t = new Reversal(s); //bikin class Reversal
+                t.start();
+
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+}
