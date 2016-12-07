@@ -78,14 +78,14 @@ class Panel1 extends JPanel implements ActionListener{
     String mail;
     String dumb1,dumb2,dumb3,dumb4,dumb5;
 	public Panel1(String emails){
+    	mail=emails;
 		try{
 			smail_func a = new smail_func();
-			data = a.selectEmailSent(mail);
+			data = a.selectEmailInbox(mail);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-    	mail=emails;
     	JPanel panel11 = new JPanel(new GridLayout(2,1,5,5));
     	JPanel panel111 = new JPanel(new GridLayout(1,3,5,5));
         button_reply = new JButton("Reply");
@@ -116,6 +116,7 @@ class Panel1 extends JPanel implements ActionListener{
         add(panel11);
         button_reply.addActionListener(this);
         button_delete.addActionListener(this);
+        read.addActionListener(this);
     }
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -123,19 +124,18 @@ class Panel1 extends JPanel implements ActionListener{
 		try{
 			smail_func func = new smail_func();
 			if(arg0.getSource()==button_reply){
-				new Panel4(mail);
-	        }
+				new Panel4(dumb2,dumb1,dumb3,mail);
+			}
 			else if(arg0.getSource()==button_delete){
-				//public void hapus(String ID_Penerima,String Subjects,String isi,String ID_Pengirim) throws SQLException{
-				//new Panel4();
 				func.hapus(mail, dumb2, dumb3, dumb1);
 				revalidate();
-	        }
+				repaint();
+			}
 			else if(arg0.getSource()==read){
-				//new Panel4();
-				//public void reads(String id_pene,String isi,String subj,String pengirim)throws SQLException{
 				func.reads(mail,dumb3,dumb2,dumb1);
+				new Panel5(dumb2,dumb1,dumb3,mail);
 				revalidate();
+				repaint();
 	        }
 		}
     	catch (Exception e){
@@ -200,6 +200,7 @@ class Panel2 extends JPanel implements ActionListener{
 				//new Panel4();
 				func.hapus(dumb1, dumb2, dumb3, mail);
 				revalidate();
+				repaint();
 	        }			
 		}
     	catch (Exception e){
@@ -241,6 +242,11 @@ class Panel3 extends JPanel implements ActionListener{
 			smail_func func = new smail_func();
 			if(arg0.getSource()==button_ok){
 				func.kirimEmail(mail, textField_to.getText(), textField_subject.getText(), textArea_isi.getText());
+				JOptionPane.showMessageDialog(null, "Email sent successfully");
+				revalidate();
+				textField_to.setText("");
+				textField_subject.setText("");
+				textArea_isi.setText("");
 	        }
 		}
     	catch (Exception e){
@@ -255,7 +261,7 @@ class Panel4 extends JFrame implements ActionListener{
     	JTextField textField_to,textField_subject;
     	JTextArea textArea_isi;
     	String mail;
-        public Panel4(String emails){//String emails,String subject,String to){
+        public Panel4(String subject,String to,String isi,String emails){//String emails,String subject,String to){
         	mail=emails;
         	setSize(800,600);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -267,9 +273,10 @@ class Panel4 extends JFrame implements ActionListener{
             cancel = new JButton("Cancel");
             textField_to = new JTextField();
             textField_subject = new JTextField();
-            //textField_to.setText(to);
-            //textField_subject.setText(subject);
             textArea_isi = new JTextArea();
+            textField_to.setText(to);
+            textField_subject.setText(subject);
+            textArea_isi.setText(isi);
             JPanel msg_panel = new JPanel(new GridLayout(2,1,5,5));
             msg_panel.add(label_to,BorderLayout.WEST);
             msg_panel.add(textField_to,BorderLayout.EAST);
@@ -291,9 +298,16 @@ class Panel4 extends JFrame implements ActionListener{
 				smail_func func = new smail_func();
 				if(arg0.getSource()==button_ok){
 					func.kirimEmail(mail, textField_to.getText(), textField_subject.getText(), textArea_isi.getText());
+					JOptionPane.showMessageDialog(null, "Email sent successfully");
+					revalidate();
+					textField_to.setText("");
+					textField_subject.setText("");
+					textArea_isi.setText("");
+					repaint();
 		        }
 				else{
 					dispose();
+					setVisible(false);
 				}
 			}
 	    	catch (Exception e){
@@ -307,10 +321,12 @@ class Panel5 extends JFrame implements ActionListener{
     JButton button_ok;
 	JTextField textField_to,textField_subject;
 	JTextArea textArea_isi;
-    public Panel5(String subject,String to,String isi){
+	String mail;
+    public Panel5(String subject,String to,String isi,String from){
+    	mail=from;
     	setSize(800,600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-    	JPanel panel14 = new JPanel(new GridLayout(3,10,5,5));
+    	JPanel panel14 = new JPanel(new GridLayout(4,10,5,5));
         JLabel label_to = new JLabel("From :");
         JLabel label_subject = new JLabel("Subject ");
         button_ok = new JButton("Close");
@@ -327,13 +343,25 @@ class Panel5 extends JFrame implements ActionListener{
         msg_panel.add(textField_subject,BorderLayout.EAST);
         panel14.add(msg_panel);
         panel14.add(textArea_isi);
+        panel14.add(button_ok);
         add(panel14);
         setVisible(true);
+        button_ok.addActionListener(this);
     }
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		dispose();
+		try{
+			smail_func func = new smail_func();
+			if(arg0.getSource()==button_ok){
+				revalidate();
+				repaint();
+				dispose();
+			}
+		}
+    	catch (Exception e){
+    		e.printStackTrace();
+    	}
 	}
 }
 
