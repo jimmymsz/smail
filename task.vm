@@ -1,0 +1,10 @@
+<html>
+<head><title>Welcome To Menu Admin</title></head>
+<body>
+<h1>Option</h1>
+<form>
+    <input type="button" onClick="parent.location='http://localhost:4567/users'" value="Go to Users Database" />
+    <input type="button" onClick="parent.location='http://localhost:4567/mail'" value="Go to Mail Database" />
+</form>
+</body>
+</html>
