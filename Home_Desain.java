@@ -557,7 +557,6 @@ class Panelsearch extends JFrame implements ActionListener{
             }
         });
         panel12.add(jsp);
-        panel123.add(button_delete);
         panel123.add(open);
         panel12.add(panel123);
         add(panel12);
