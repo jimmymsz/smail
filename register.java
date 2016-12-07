@@ -19,9 +19,9 @@ public class register extends JFrame implements ActionListener{
 		setTitle("Register");
         setSize(520, 420);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        JPanel mainpanel= new JPanel(new GridLayout(14,1));
-        JPanel panel1= new JPanel(new GridLayout(1,2));
-        JPanel panel2= new JPanel(new GridLayout(1,2));
+        JPanel mainpanel= new JPanel(new GridLayout(14,1,5,5));
+        JPanel panel1= new JPanel(new GridLayout(1,2,5,5));
+        JPanel panel2= new JPanel(new GridLayout(1,2,5,5));
         JLabel Email = new JLabel("Email");
         JLabel Nama = new JLabel("Name");
         JLabel Password = new JLabel("Password");
