@@ -49,12 +49,13 @@ class smail_func {
 		stmt.close();
 	}
 	public void kirimEmail(String id_pengirim,String id_penerima,String Subject,String isi) throws SQLException{
-		String query="INSERT INTO mail(ID_Pengirim,ID_Penerima,Subject,Isi,E_status,Waktu_terima) VALUES(?,?,?,?,unread,CURRENT_TIMESTAMP)";
+		String query="INSERT INTO mail(ID_Pengirim,ID_Penerima,Subjects,isi,E_status,Waktu_terima) VALUES(?,?,?,?,?,CURRENT_TIMESTAMP)";
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, id_pengirim);
 		stmt.setString(2, id_penerima);
 		stmt.setString(3, Subject);
 		stmt.setString(4, isi);
+		stmt.setString(5, "unread");
 		stmt.execute();
 		stmt.close();
 	}
@@ -65,7 +66,7 @@ class smail_func {
 		Vector<Vector<Object>> datass = new Vector<Vector<Object>>();
 		while(rs.next()){
 			Vector<Object> e = new Vector<Object>();
-			e.add(rs.getString("ID_Pengirim"));
+			e.add(rs.getString("ID_Penerima"));
 			e.add(rs.getString("Subjects"));
 			e.add(rs.getString("isi"));
 			e.add(rs.getString("E_status"));
@@ -113,7 +114,7 @@ class smail_func {
 		String query = "SELECT * FROM mail WHERE "
 				+ "(ID_Pengirim LIKE '"+search1+"')or(ID_Pengirim LIKE '"+search2+"')or(ID_Pengirim LIKE '"+search3+"')or(ID_Pengirim LIKE '"+search4+"')or"
 				+ "(ID_Penerima LIKE '"+search1+"')or(ID_Penerima LIKE '"+search2+"')or(ID_Penerima LIKE '"+search3+"')or(ID_Penerima LIKE '"+search4+"')or"
-				+ "(Subject LIKE '"+search1+"')or(Subject LIKE '"+search2+"')or(Subject LIKE '"+search3+"')or(Subject LIKE '"+search4+"')or"
+				+ "(Subjects LIKE '"+search1+"')or(Subjects LIKE '"+search2+"')or(Subjects LIKE '"+search3+"')or(Subjects LIKE '"+search4+"')or"
 				+ "(isi LIKE '"+search1+"')or(isi LIKE '"+search2+"')or(isi LIKE '"+search3+"')or(isi LIKE '"+search4+"')";
 		ResultSet rs=stmt.executeQuery(query);
 		System.out.println("");
@@ -137,7 +138,7 @@ class smail_func {
 	}
 	public void reads(String id_pene,String isi,String subj,String pengirim)throws SQLException{
 		stmt=conn.createStatement();
-		String query = "UPDATE mail SET E_Status = read WHERE ID_Penerima = '"+id_pene+"' and ID_Pengirim = '"+pengirim+"' and isi = '"+isi+"' and Subjects = '"+subj+"'";
+		String query = "UPDATE mail SET E_Status = 'read' WHERE ID_Penerima = '"+id_pene+"' and ID_Pengirim = '"+pengirim+"' and isi = '"+isi+"' and Subjects = '"+subj+"'";
 		stmt.execute(query);
 		stmt.close();
 	}
