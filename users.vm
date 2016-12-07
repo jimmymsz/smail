@@ -1,0 +1,40 @@
+<html>
+<head><title>Users</title></head>
+<body>
+<input type="button" onClick="parent.location='http://localhost:4567/task'" value="Go to Menu" />
+<h1>Database Users</h1>
+<form action = "find_users" method="post">
+    Find  :
+    <input type="text" name="d1" placeholder="Any">
+    <input type="submit" name="submit" value="Submit">
+</form>
+<form action = "insert_users" method="post">
+    Insert :
+    <input type="text" name="d1" placeholder="Username">
+    <input type="text" name="d2" placeholder="Nama">
+    <input type="password" name="d3" placeholder="Password">
+    <input type="password" name="d4" placeholder="PIN">
+    <input type="submit" name="submit" value="Create">
+</form>
+<form action = "delete_users" method="post">
+    Delete :
+    <input type="text" name="d1" placeholder="Username">
+    <input type="submit" name="submit" value="Submit">
+</form>
+<!--$users <br> !-->
+<br>
+<table border="1">
+    <tr>
+        <th>Email</th>
+        <th>Nama</th>
+    </tr>
+    #foreach($tusers1 in $users)
+        <tr>
+            #foreach($tusers2 in $tusers1)
+                <th> $tusers2</th>
+            #end
+        </tr>
+    #end
+</table>
+</body>
+</html>
