@@ -1,153 +1,98 @@
 package smail;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 
-class smail_func {
-	private Connection conn;
-	Statement stmt = null;
-
-	public smail_func() throws Exception{
-		Class.forName("com.mysql.jdbc.Driver");
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/smail","root","");
+public class ForgotPass extends JFrame implements ActionListener{
+	JButton submit,cancel;
+	JTextField mail,nama;
+	JPasswordField pass,kon_pass,pin,kon_pin;
+	ForgotPass(){
+		setTitle("Forgot Password");
+        setSize(520, 420);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        JPanel mainpanel= new JPanel(new GridLayout(14,1,5,5));
+        JPanel panel1= new JPanel(new GridLayout(1,2,5,5));
+        JPanel panel2= new JPanel(new GridLayout(1,2,5,5));
+        JLabel Email = new JLabel("Email");
+        JLabel PIN = new JLabel("PIN");
+        JLabel PIN2 = new JLabel("Confirm your PIN");
+		mail = new JTextField();
+		pin = new JPasswordField();
+		kon_pin = new JPasswordField();
+		submit = new JButton("Submit");
+		cancel = new JButton("Cancel");
+		panel1.add(mail,BorderLayout.EAST);
+		panel2.add(submit, BorderLayout.EAST);
+		panel2.add(cancel, BorderLayout.WEST);
+		
+		mainpanel.add(Email);
+		mainpanel.add(panel1);
+		mainpanel.add(PIN);
+		mainpanel.add(pin);
+		mainpanel.add(PIN2);
+		mainpanel.add(kon_pin);
+		mainpanel.add(panel2);
+		mainpanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		//panel2.add(arg0);
+		add(mainpanel);
+		setVisible(true);
+		submit.addActionListener(this);
+		cancel.addActionListener(this);
 	}
-	public boolean isConnected(){
-		return (conn!=null);
-	}
-	public Vector<Object> lupaPass(String id,int pin) throws SQLException{
-		stmt=conn.createStatement();
-		String query = "select Pass from users WHERE Email = '"+id+"' and PIN = '"+pin+"'";
-		ResultSet rs = stmt.executeQuery(query);
-		Vector<Object> ans = new Vector<Object>();
-		while(rs.next()){
-			ans.add(rs.getString("Pass"));
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		try{
+			smail_func dbn = new smail_func();
+			boolean trig=true;
+			if(arg0.getSource()==submit){
+					if(!mail.getText().equals("") &&Arrays.equals(pin.getPassword(),kon_pin.getPassword())&&pin.getPassword().length!=0){
+						Vector<Object> data = new Vector<Object>();
+					    String mailss= mail.getText();
+						String a2 = new String(pin.getPassword());
+						data = dbn.lupaPass(mailss, Integer.parseInt(a2));
+						String passwords = new String((String) data.elementAt(0));
+						JOptionPane.showMessageDialog(null,"your password is : "+passwords);
+						new MainProgram();
+						setVisible(false);
+		        		dispose();
+					}
+					else{
+						if(mail.getText().equals("")){
+							JOptionPane.showMessageDialog(null, "Email cannot be empty");
+						}
+						if(!Arrays.equals(pin.getPassword(),kon_pin.getPassword())){
+							JOptionPane.showMessageDialog(null, "PIN and PIN confirmation must same");
+						}
+						if(pin.getPassword().length==0){
+							JOptionPane.showMessageDialog(null, "PIN cannot be empty");				
+						}
+						if(kon_pin.getPassword().length==0){
+							JOptionPane.showMessageDialog(null, "PIN confirmation cannot be empty");				
+						}
+					}				
+			}
+			else{
+				//return home
+				new MainProgram();
+				dispose();
+			}
 		}
-		stmt.close();
-		return ans;
-	}
-	public void GantiPass(String pass,String id) throws SQLException{
-		stmt=conn.createStatement();
-		String query = "UPDATE users SET Pass = '"+pass+"' WHERE Email = '"+id+"'";
-		stmt.execute(query);
-		stmt.close();
-	}
-	public void GantiPin(int pin,String id) throws SQLException{
-		stmt=conn.createStatement();
-		String query = "UPDATE users SET PIN = '"+pin+"' WHERE Email = '"+id+"'";
-		stmt.execute(query);
-		stmt.close();
-	}
-	public void RegisUser(String mail,String nama, String pass, int pin) throws SQLException{
-		String query="INSERT INTO users(Email,Nama,Pass,PIN) VALUES(?,?,?,?)";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setString(1, mail);
-		stmt.setString(2, nama);
-		stmt.setString(3, pass);
-		stmt.setInt(4, pin);
-		stmt.execute();
-		stmt.close();
-	}
-	public void kirimEmail(String id_pengirim,String id_penerima,String Subject,String isi) throws SQLException{
-		String query="INSERT INTO mail(ID_Pengirim,ID_Penerima,Subjects,isi,E_status,Waktu_terima) VALUES(?,?,?,?,?,CURRENT_TIMESTAMP)";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		stmt.setString(1, id_pengirim);
-		stmt.setString(2, id_penerima);
-		stmt.setString(3, Subject);
-		stmt.setString(4, isi);
-		stmt.setString(5, "unread");
-		stmt.execute();
-		stmt.close();
-	}
-	public Vector<Vector<Object>> selectEmailSent(String id)throws SQLException{
-		stmt=conn.createStatement();
-		String query = "SELECT * FROM mail WHERE ID_Pengirim = '"+id+"'";
-		ResultSet rs=stmt.executeQuery(query);
-		Vector<Vector<Object>> datass = new Vector<Vector<Object>>();
-		while(rs.next()){
-			Vector<Object> e = new Vector<Object>();
-			e.add(rs.getString("ID_Penerima"));
-			e.add(rs.getString("Subjects"));
-			e.add(rs.getString("isi"));
-			e.add(rs.getString("E_status"));
-			e.add(rs.getString("Waktu_terima"));
-			datass.add(e);
+		catch (java.lang.ArrayIndexOutOfBoundsException e){
+        	JOptionPane.showMessageDialog(null, "Wrong email or pin");
+        }
+		catch(Exception e){
+			System.out.println(e);
 		}
-		stmt.close();
-		return datass;
-	}
-	public Vector<Vector<Object>> selectEmailInbox(String id)throws SQLException{
-		stmt=conn.createStatement();
-		String query = "SELECT * FROM mail WHERE ID_Penerima = '"+id+"'";
-		ResultSet rs=stmt.executeQuery(query);
-		Vector<Vector<Object>> datass = new Vector<Vector<Object>>();
-		while(rs.next()){
-			Vector<Object> e = new Vector<Object>();
-			e.add(rs.getString("ID_Pengirim"));
-			e.add(rs.getString("Subjects"));
-			e.add(rs.getString("isi"));
-			e.add(rs.getString("E_status"));
-			e.add(rs.getString("Waktu_terima"));
-			datass.add(e);
-		}
-		stmt.close();
-		return datass;
-	}
-	public Vector<Object> Login(String email,String pass) throws SQLException{
-		stmt=conn.createStatement();
-		String query = "Select Nama, Email from users WHERE Email = '"+ email +"' And pass= '"+ pass +"'";
-		ResultSet rs=stmt.executeQuery(query);
-		Vector<Object> ans = new Vector<Object>();
-		while(rs.next()){
-			ans.add(rs.getString("Nama"));
-			ans.add(rs.getString("Email"));
-		}
-		stmt.close();
-		return ans;
-	}
-	public Vector<Vector<Object>> searchEmail(String id,String mail)throws SQLException{
-		stmt = conn.createStatement();
-		String search1 = "%"+id;
-		String search2 = "%"+id+"%";
-		String search3 = id+"%";
-		String search4 = id;
-		String query = "SELECT * FROM mail WHERE ("
-				+ "(ID_Pengirim LIKE '"+search1+"')or(ID_Pengirim LIKE '"+search2+"')or(ID_Pengirim LIKE '"+search3+"')or(ID_Pengirim LIKE '"+search4+"')or"
-				+ "(ID_Penerima LIKE '"+search1+"')or(ID_Penerima LIKE '"+search2+"')or(ID_Penerima LIKE '"+search3+"')or(ID_Penerima LIKE '"+search4+"')or"
-				+ "(Subjects LIKE '"+search1+"')or(Subjects LIKE '"+search2+"')or(Subjects LIKE '"+search3+"')or(Subjects LIKE '"+search4+"')or"
-				+ "(isi LIKE '"+search1+"')or(isi LIKE '"+search2+"')or(isi LIKE '"+search3+"')or(isi LIKE '"+search4+"')) and (ID_Pengirim LIKE '"+mail+"'"
-				+ " or ID_Penerima LIKE'"+mail+"')";
-		ResultSet rs=stmt.executeQuery(query);
-		Vector<Vector<Object>> datass = new Vector<Vector<Object>>();
-		while(rs.next()){
-			Vector<Object> e = new Vector<Object>();
-			e.add(rs.getString("ID_Pengirim"));
-			e.add(rs.getString("ID_Penerima"));
-			e.add(rs.getString("Subjects"));
-			e.add(rs.getString("isi"));
-			e.add(rs.getString("E_status"));
-			e.add(rs.getString("Waktu_terima"));
-			datass.add(e);
-		}
-		stmt.close();
-		return datass;
-	}
-	public void hapus(String ID_Penerima,String Subjects,String isi,String ID_Pengirim) throws SQLException{
-		stmt=conn.createStatement();
-		String query = "DELETE FROM mail Where ID_Pengirim = '"+ID_Pengirim+"' and ID_Penerima = '"+ID_Penerima+"' and Subjects = '"+Subjects+"' and isi = '"+isi+"'";
-		stmt.execute(query);
-	}
-	public void reads(String id_pene,String isi,String subj,String pengirim)throws SQLException{
-		stmt=conn.createStatement();
-		String query = "UPDATE mail SET E_Status = 'read' WHERE ID_Penerima = '"+id_pene+"' and ID_Pengirim = '"+pengirim+"' and isi = '"+isi+"' and Subjects = '"+subj+"'";
-		stmt.execute(query);
-		stmt.close();
-	}
-	//fungsi verifikasi email yang dituju
-	public static void main(String[] args){
 	}
 }
