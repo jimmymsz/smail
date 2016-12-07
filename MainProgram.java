@@ -25,9 +25,9 @@ public class MainProgram extends JFrame implements ActionListener {
         setSize(600,300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        JPanel panel1 = new JPanel(new GridLayout(2,5));
-        JPanel panel2 = new JPanel(new GridLayout(1,2));
-        JPanel panel3 = new JPanel(new GridLayout(1,1));
+        JPanel panel1 = new JPanel(new GridLayout(2,5,5,5));
+        JPanel panel2 = new JPanel(new GridLayout(1,2,5,5));
+        JPanel panel3 = new JPanel(new GridLayout(1,1,5,5));
         panel1.add(label_email);
         panel1.add(textField_email);
         panel1.add(label_password);
