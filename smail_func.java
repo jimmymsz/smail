@@ -105,23 +105,24 @@ class smail_func {
 		stmt.close();
 		return ans;
 	}
-	public Vector<Vector<Object>> searchEmail(String id)throws SQLException{
+	public Vector<Vector<Object>> searchEmail(String id,String mail)throws SQLException{
 		stmt = conn.createStatement();
 		String search1 = "%"+id;
 		String search2 = "%"+id+"%";
 		String search3 = id+"%";
 		String search4 = id;
-		String query = "SELECT * FROM mail WHERE "
+		String query = "SELECT * FROM mail WHERE ("
 				+ "(ID_Pengirim LIKE '"+search1+"')or(ID_Pengirim LIKE '"+search2+"')or(ID_Pengirim LIKE '"+search3+"')or(ID_Pengirim LIKE '"+search4+"')or"
 				+ "(ID_Penerima LIKE '"+search1+"')or(ID_Penerima LIKE '"+search2+"')or(ID_Penerima LIKE '"+search3+"')or(ID_Penerima LIKE '"+search4+"')or"
 				+ "(Subjects LIKE '"+search1+"')or(Subjects LIKE '"+search2+"')or(Subjects LIKE '"+search3+"')or(Subjects LIKE '"+search4+"')or"
-				+ "(isi LIKE '"+search1+"')or(isi LIKE '"+search2+"')or(isi LIKE '"+search3+"')or(isi LIKE '"+search4+"')";
+				+ "(isi LIKE '"+search1+"')or(isi LIKE '"+search2+"')or(isi LIKE '"+search3+"')or(isi LIKE '"+search4+"')) and (ID_Pengirim LIKE '"+mail+"'"
+				+ " or ID_Penerima LIKE'"+mail+"')";
 		ResultSet rs=stmt.executeQuery(query);
-		System.out.println("");
 		Vector<Vector<Object>> datass = new Vector<Vector<Object>>();
 		while(rs.next()){
 			Vector<Object> e = new Vector<Object>();
 			e.add(rs.getString("ID_Pengirim"));
+			e.add(rs.getString("ID_Penerima"));
 			e.add(rs.getString("Subjects"));
 			e.add(rs.getString("isi"));
 			e.add(rs.getString("E_status"));
