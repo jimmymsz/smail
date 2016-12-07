@@ -23,9 +23,9 @@ public class UPIN extends JFrame implements ActionListener{
 		setTitle("Password Change");
         setSize(420, 195);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        JPanel mainpanel= new JPanel(new GridLayout(5,1));
-        JPanel panel1= new JPanel(new GridLayout(1,2));
-        JPanel panel2= new JPanel(new GridLayout(1,2));
+        JPanel mainpanel= new JPanel(new GridLayout(5,1,5,5));
+        JPanel panel1= new JPanel(new GridLayout(1,2,5,5));
+        JPanel panel2= new JPanel(new GridLayout(1,2,5,5));
         JLabel PIN = new JLabel("New PIN");
         JLabel PIN2 = new JLabel("Confirm your PIN");
 		pin = new JPasswordField();
