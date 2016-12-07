@@ -50,18 +50,14 @@ public class Home extends JFrame implements ActionListener{
 		try{
             if(arg0.getSource()==button_logout){
                 new MainProgram();
-                System.out.println(emails+" "+name);
                 this.dispose();
             }
             else if(arg0.getSource()==button_ubahpass){
-            	System.out.println(emails+" "+name);
-                new Upass(emails,name);
-                System.out.println(emails+" "+name);
+            	new Upass(emails,name);
                 this.dispose();
             }
             else if(arg0.getSource()==button_ubahpin){
-            	System.out.println(emails+" "+name);
-                new UPIN(emails,name);
+            	new UPIN(emails,name);
                 this.dispose();
             }
         }
@@ -71,13 +67,15 @@ public class Home extends JFrame implements ActionListener{
 	}
 }
 
-class Panel1 extends JPanel {
-    JButton button_reply,button_delete;
+class Panel1 extends JPanel implements ActionListener{
+    JButton button_reply,button_delete,read;
 	public Panel1(){
     	JPanel panel11 = new JPanel(new GridLayout(2,1));
     	JPanel panel111 = new JPanel(new GridLayout(1,2));
         button_reply = new JButton("Reply");
         button_delete = new JButton("Delete");
+        read = new JButton("Read");
+        //String[] colHeads = {"Dari","Subject","Isi","Status"};
         String[] colHeads = { "Name", "Extension", "ID#" };
         Object[][] data = {
                 {"Gail","456715","5921214"},
@@ -89,12 +87,21 @@ class Panel1 extends JPanel {
         panel11.add(jsp);
         panel111.add(button_reply);
         panel111.add(button_delete);
+        panel111.add(read);
         panel11.add(panel111);
         add(panel11);
+        button_reply.addActionListener(this);
+        button_delete.addActionListener(this);
     }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+
+    	new Panel4();
+	}
 }
 
-class Panel2 extends JPanel {
+class Panel2 extends JPanel implements ActionListener{
     JButton button_delete;
 	public Panel2(){
 //        JPanel table_panel = new JPanel();
@@ -120,31 +127,109 @@ class Panel2 extends JPanel {
 //        button_panel.add(Box.createRigidArea(new Dimension(10,0)));
 
     }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
 
-class Panel3 extends JPanel {
+class Panel3 extends JPanel implements ActionListener{
+    JButton button_ok;
+	JTextField textField_to,textField_subject;
+	JTextArea textArea_isi;
     public Panel3(){
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-
+    	setSize(800,600);
+    	JPanel panel13 = new JPanel(new GridLayout(3,10));
         JLabel label_to = new JLabel("To :");
         JLabel label_subject = new JLabel("Subject ");
-        JButton button_ok = new JButton("Send");
-        JTextField textField_to = new JTextField();
-        JTextArea textArea_subject = new JTextArea();
-        JPanel msg_panel = new JPanel(new GridLayout(2,1,20,20));
-        JPanel button_panel = new JPanel(new GridLayout(1,1,20,20));
-        msg_panel.add(label_to);
-        msg_panel.add(textField_to);
-        msg_panel.add(label_subject);
-        msg_panel.add(textArea_subject);
-        add(msg_panel);
-        button_panel.add(button_ok);
-        add(button_panel);
-
-
+        button_ok = new JButton("Send");
+        textField_to = new JTextField();
+        textField_subject = new JTextField();
+        textArea_isi = new JTextArea();
+        JPanel msg_panel = new JPanel(new GridLayout(2,1));
+        msg_panel.add(label_to,BorderLayout.WEST);
+        msg_panel.add(textField_to,BorderLayout.EAST);
+        msg_panel.add(label_subject,BorderLayout.WEST);
+        msg_panel.add(textField_subject,BorderLayout.EAST);
+        panel13.add(msg_panel);
+        panel13.add(textArea_isi);
+        panel13.add(button_ok);
+        add(panel13);
+        button_ok.addActionListener(this);
     }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}
+class Panel4 extends JFrame implements ActionListener{
+        JButton button_ok;
+    	JTextField textField_to,textField_subject;
+    	JTextArea textArea_isi;
+        public Panel4(){//String emails,String subject,String to){
+        	setSize(800,600);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+        	JPanel panel14 = new JPanel(new GridLayout(3,10));
+            JLabel label_to = new JLabel("To :");
+            JLabel label_subject = new JLabel("Subject ");
+            button_ok = new JButton("Send");
+            textField_to = new JTextField();
+            textField_subject = new JTextField();
+            //textField_to.setText(to);
+            //textField_subject.setText(subject);
+            textArea_isi = new JTextArea();
+            JPanel msg_panel = new JPanel(new GridLayout(2,1));
+            msg_panel.add(label_to,BorderLayout.WEST);
+            msg_panel.add(textField_to,BorderLayout.EAST);
+            msg_panel.add(label_subject,BorderLayout.WEST);
+            msg_panel.add(textField_subject,BorderLayout.EAST);
+            panel14.add(msg_panel);
+            panel14.add(textArea_isi);
+            panel14.add(button_ok);
+            add(panel14);
+            setVisible(true);
+        }
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+}
+class Panel5 extends JFrame implements ActionListener{
+    JButton button_ok;
+	JTextField textField_to,textField_subject;
+	JTextArea textArea_isi;
+    public Panel5(String subject,String to,String isi){
+    	setSize(800,600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    	JPanel panel14 = new JPanel(new GridLayout(3,10));
+        JLabel label_to = new JLabel("From :");
+        JLabel label_subject = new JLabel("Subject ");
+        button_ok = new JButton("Send");
+        textField_to = new JTextField();
+        textField_subject = new JTextField();
+        textArea_isi = new JTextArea();
+        textField_to.setText(to);
+        textField_subject.setText(subject);
+        textArea_isi.setText(isi);
+        JPanel msg_panel = new JPanel(new GridLayout(2,1));
+        msg_panel.add(label_to,BorderLayout.WEST);
+        msg_panel.add(textField_to,BorderLayout.EAST);
+        msg_panel.add(label_subject,BorderLayout.WEST);
+        msg_panel.add(textField_subject,BorderLayout.EAST);
+        panel14.add(msg_panel);
+        panel14.add(textArea_isi);
+        add(panel14);
+        setVisible(true);
+    }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 
