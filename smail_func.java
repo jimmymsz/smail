@@ -19,16 +19,20 @@ class smail_func {
 	public boolean isConnected(){
 		return (conn!=null);
 	}
-	public String lupaPass(String id,int pin) throws SQLException{
+	public Vector<Object> lupaPass(String id,int pin) throws SQLException{
 		stmt=conn.createStatement();
 		String query = "select Pass from users WHERE Email = '"+id+"' and PIN = '"+pin+"'";
-		String asd=stmt.executeQuery(query).toString();
+		ResultSet rs = stmt.executeQuery(query);
+		Vector<Object> ans = new Vector<Object>();
+		while(rs.next()){
+			ans.add(rs.getString("Pass"));
+		}
 		stmt.close();
-		return asd;
+		return ans;
 	}
 	public void GantiPass(String pass,String id) throws SQLException{
 		stmt=conn.createStatement();
-		String query = "UPDATE users SET pass = '"+pass+"' WHERE Email = '"+id+"'";
+		String query = "UPDATE users SET Pass = '"+pass+"' WHERE Email = '"+id+"'";
 		stmt.execute(query);
 		stmt.close();
 	}
