@@ -166,6 +166,8 @@ class smail_func {
 		String query = "DELETE FROM mail Where ID_Pengirim = '"+ID_Pengirim+"' and ID_Penerima = '"+ID_Penerima+"' and Subjects = '"+Subjects+"' and isi = '"+isi+"'";
 		stmt.execute(query);
 	}
+	//fungsi read
+	//fungsi verifikasi email yang dituju
 	public static void main(String[] args){
 	}
 }
