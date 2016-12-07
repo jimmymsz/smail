@@ -1,0 +1,41 @@
+<html>
+<head><title>Mail</title></head>
+<body>
+<input type="button" onClick="parent.location='http://localhost:4567/task'" value="Go to Menu" />
+<h1>Database Mail</h1>
+<form action = "find_mail" method="post">
+    Find  :
+    <input type="text" name="d1" placeholder="Username">
+    <input type="submit" name="submit" value="Find">
+</form>
+<form action = "insert_mail" method="post">
+    Insert :
+    <input type="text" name="d1" placeholder="To">
+    <input type="text" name="d2" placeholder="Subject">
+    <input type="text" name="d3" placeholder="Isi">
+    <input type="submit" name="submit" value="Send">
+</form>
+<form action = "delete_mail" method="post">
+    Delete :
+    <input type="text" name="d1" placeholder="Email ID">
+    <input type="submit" name="submit" value="Delete">
+</form>
+<table border="1">
+    <tr>
+        <th>Number</th>
+        <th>ID_Pengirim</th>
+        <th>ID_Penerima</th>
+        <th>Subject</th>
+        <th>E_Status</th>
+        <th>Waktu_terima</th>
+    </tr>
+    #foreach($tmail1 in $mail)
+        <tr>
+            #foreach($tmail2 in $tmail1)
+                <th> $tmail2</th>
+            #end
+        </tr>
+    #end
+</table>
+</body>
+</html>
