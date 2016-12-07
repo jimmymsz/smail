@@ -10,20 +10,25 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class Home extends JFrame implements ActionListener{
+	
     JTabbedPane jtp = new JTabbedPane();
-    JButton button_logout,button_ubahpin,button_ubahpass,searching;
+    JButton button_logout,button_ubahpin,button_ubahpass,searching,refresh;
     JTextField searchField;
     String emails;
     String name;
     Home(String mail,String nama){
     	emails=mail;
     	name=nama;
+    	
+        this.setLayout(null);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        JPanel panel2 = new JPanel(new GridLayout(1,3,5,5));
+        JPanel panel2 = new JPanel(new GridLayout(1,4,5,5));
         JPanel panel3 = new JPanel(new GridLayout(1,2,5,5));
         setTitle("Welcome, "+name);
-        setSize(800,600);
+        setSize(800,800);
+        refresh = new JButton("refresh");
         button_logout = new JButton("Logout");
         button_ubahpin = new JButton("Ubah PIN");
         button_ubahpass = new JButton("Ubah Password");
@@ -33,6 +38,7 @@ public class Home extends JFrame implements ActionListener{
         jtp.addTab("Compose" , new Panel3(emails));
         searchField = new JTextField();
         panel2.add(searching);
+        panel2.add(refresh);
         panel2.add(button_ubahpass);
         panel2.add(button_ubahpin);
         panel2.add(button_logout);
@@ -41,12 +47,12 @@ public class Home extends JFrame implements ActionListener{
         add(panel3);
         add(jtp);
         panel3.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        //add(panel1);
         setVisible(true);
         button_ubahpass.addActionListener(this);
         searching.addActionListener(this);
         button_ubahpin.addActionListener(this);
         button_logout.addActionListener(this);
+        refresh.addActionListener(this);
     }
 
 	@Override
@@ -67,6 +73,11 @@ public class Home extends JFrame implements ActionListener{
             }
             else if(arg0.getSource()==searching){
             	new Panelsearch(emails,searchField.getText());
+            }
+            else{
+            	new Home(emails,name);
+            	dispose();
+            	setVisible(false);
             }
         }
         catch (Exception e){
@@ -90,7 +101,8 @@ class Panel1 extends JPanel implements ActionListener{
 			e.printStackTrace();
 		}
     	JPanel panel11 = new JPanel(new GridLayout(2,1,5,5));
-    	JPanel panel111 = new JPanel(new GridLayout(1,3,5,5));
+    	JPanel panel111 = new JPanel();
+
         button_reply = new JButton("Reply");
         button_delete = new JButton("Delete");
         read = new JButton("Read");
@@ -112,6 +124,18 @@ class Panel1 extends JPanel implements ActionListener{
             }
         });
         panel11.add(jsp);
+        jsp.setMinimumSize(new Dimension (750,560));
+        jsp.setMaximumSize(new Dimension (750,560));
+        jsp.setPreferredSize(new Dimension (750,560));
+        button_reply.setMinimumSize(new Dimension (100,100));
+        button_reply.setMaximumSize(new Dimension (100,100));
+        button_reply.setPreferredSize(new Dimension (100,100));
+        button_delete.setMinimumSize(new Dimension (100,100));
+        button_delete.setMaximumSize(new Dimension (100,100));
+        button_delete.setPreferredSize(new Dimension (100,100));
+        read.setMinimumSize(new Dimension (100,100));
+        read.setMaximumSize(new Dimension (100,100));
+        read.setPreferredSize(new Dimension (100,100));
         panel111.add(button_reply);
         panel111.add(button_delete);
         panel111.add(read);
@@ -167,7 +191,7 @@ class Panel2 extends JPanel implements ActionListener{
 			e.printStackTrace();
 		}
     	JPanel panel12 = new JPanel(new GridLayout(2,1,5,5));
-    	JPanel panel123 = new JPanel(new GridLayout(1,2,5,5));
+    	JPanel panel123 = new JPanel();
     	button_delete = new JButton("Delete");
     	open = new JButton("Read");
         Vector<Object> colHeads = new Vector<Object>();
@@ -188,6 +212,15 @@ class Panel2 extends JPanel implements ActionListener{
             }
         });
         panel12.add(jsp);
+        jsp.setMinimumSize(new Dimension (750,560));
+        jsp.setMaximumSize(new Dimension (750,560));
+        jsp.setPreferredSize(new Dimension (750,560));
+        button_delete.setMinimumSize(new Dimension (100,100));
+        button_delete.setMaximumSize(new Dimension (100,100));
+        button_delete.setPreferredSize(new Dimension (100,100));
+        open.setMinimumSize(new Dimension (100,100));
+        open.setMaximumSize(new Dimension (100,100));
+        open.setPreferredSize(new Dimension (100,100));
         panel123.add(button_delete);
         panel123.add(open);
         panel12.add(panel123);
@@ -229,22 +262,54 @@ class Panel3 extends JPanel implements ActionListener{
     public Panel3(String emails){
     	mail=emails;
     	setSize(800,600);
-    	JPanel panel13 = new JPanel(new GridLayout(3,10,5,5));
+    	JPanel panel15 = new JPanel();
         JLabel label_to = new JLabel("To :");
         JLabel label_subject = new JLabel("Subject ");
         button_ok = new JButton("Send");
         textField_to = new JTextField();
         textField_subject = new JTextField();
         textArea_isi = new JTextArea();
-        JPanel msg_panel = new JPanel(new GridLayout(2,1));
-        msg_panel.add(label_to,BorderLayout.WEST);
-        msg_panel.add(textField_to,BorderLayout.EAST);
-        msg_panel.add(label_subject,BorderLayout.WEST);
-        msg_panel.add(textField_subject,BorderLayout.EAST);
-        panel13.add(msg_panel);
-        panel13.add(textArea_isi);
-        panel13.add(button_ok);
+        JSplitPane panel13 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,label_to,textField_to);
+        JSplitPane panel14 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,label_subject,textField_subject);
+        JPanel msg_panel = new JPanel();
+        label_to.setMinimumSize(new Dimension (75,50));
+        label_to.setMaximumSize(new Dimension (75,50));
+        label_to.setPreferredSize(new Dimension (75,50));
+        textField_to.setMinimumSize(new Dimension (30,50));
+        textField_to.setMaximumSize(new Dimension (800,50));
+        textField_to.setPreferredSize(new Dimension (50,50));
+        panel13.setMinimumSize(new Dimension (800,50));
+        panel13.setMaximumSize(new Dimension (800,50));
+        panel13.setPreferredSize(new Dimension (800,50));
+        label_subject.setMinimumSize(new Dimension (75,50));
+        label_subject.setMaximumSize(new Dimension (75,50));
+        label_subject.setPreferredSize(new Dimension (75,50));
+        textField_subject.setMinimumSize(new Dimension (30,50));
+        textField_subject.setMaximumSize(new Dimension (800,50));
+        textField_subject.setPreferredSize(new Dimension (50,50));
+        panel14.setMinimumSize(new Dimension (800,50));
+        panel14.setMaximumSize(new Dimension (800,50));
+        panel14.setPreferredSize(new Dimension (800,50));
+        panel13.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        panel14.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        textArea_isi.setMinimumSize(new Dimension (100,100));
+        textArea_isi.setMaximumSize(new Dimension (600,200));
+        textArea_isi.setPreferredSize(new Dimension (600,200));
+        panel15.setMinimumSize(new Dimension (600,200));
+        panel15.setMaximumSize(new Dimension (600,200));
+        panel15.setPreferredSize(new Dimension (600,200));
+        panel15.add(textArea_isi);
+        panel15.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        msg_panel.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        button_ok.setMinimumSize(new Dimension (30,50));
+        button_ok.setMaximumSize(new Dimension (200,50));
+        button_ok.setPreferredSize(new Dimension (100,50));
+        msg_panel.add(button_ok);
         add(panel13);
+        add(panel14);
+        add(panel15);
+        
+        add(msg_panel);
         button_ok.addActionListener(this);
     }
 	@Override
@@ -267,6 +332,9 @@ class Panel3 extends JPanel implements ActionListener{
 		
 	}
 }
+
+//Untuk Reply
+
 class Panel4 extends JFrame implements ActionListener{
         JButton button_ok,cancel;
     	JTextField textField_to,textField_subject;
@@ -274,10 +342,12 @@ class Panel4 extends JFrame implements ActionListener{
     	String mail;
         public Panel4(String subject,String to,String isi,String emails){//String emails,String subject,String to){
         	mail=emails;
-        	setSize(800,600);
+        	setSize(800,450);
+            this.setLayout(null);
+            setLocationRelativeTo(null);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
-        	JPanel panel14 = new JPanel(new GridLayout(3,10,5,5));
-        	JPanel panel141 = new JPanel(new GridLayout(1,2,5,5));
+            setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        	JPanel panel141 = new JPanel();
             JLabel label_to = new JLabel("To :");
             JLabel label_subject = new JLabel("Subject ");
             button_ok = new JButton("Send");
@@ -288,17 +358,53 @@ class Panel4 extends JFrame implements ActionListener{
             textField_to.setText(to);
             textField_subject.setText(subject);
             textArea_isi.setText(isi);
-            JPanel msg_panel = new JPanel(new GridLayout(2,1,5,5));
-            msg_panel.add(label_to,BorderLayout.WEST);
-            msg_panel.add(textField_to,BorderLayout.EAST);
-            msg_panel.add(label_subject,BorderLayout.WEST);
-            msg_panel.add(textField_subject,BorderLayout.EAST);
-            panel14.add(msg_panel);
-            panel14.add(textArea_isi);
+            JSplitPane panel13 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,label_to,textField_to);
+            JSplitPane panel14 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,label_subject,textField_subject);
+            JPanel panel15 = new JPanel();
+            JPanel msg_panel = new JPanel();
+            label_to.setMinimumSize(new Dimension (75,50));
+            label_to.setMaximumSize(new Dimension (75,50));
+            label_to.setPreferredSize(new Dimension (75,50));
+            textField_to.setMinimumSize(new Dimension (30,50));
+            textField_to.setMaximumSize(new Dimension (400,50));
+            textField_to.setPreferredSize(new Dimension (200,50));
+            panel13.setMinimumSize(new Dimension (200,50));
+            panel13.setMaximumSize(new Dimension (500,50));
+            panel13.setPreferredSize(new Dimension (350,50));
+            label_subject.setMinimumSize(new Dimension (75,50));
+            label_subject.setMaximumSize(new Dimension (75,50));
+            label_subject.setPreferredSize(new Dimension (75,50));
+            textField_subject.setMinimumSize(new Dimension (30,50));
+            textField_subject.setMaximumSize(new Dimension (400,50));
+            textField_subject.setPreferredSize(new Dimension (200,50));
+            panel14.setMinimumSize(new Dimension (200,50));
+            panel14.setMaximumSize(new Dimension (500,50));
+            panel14.setPreferredSize(new Dimension (350,50));
+            panel13.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+            panel14.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+            textArea_isi.setMinimumSize(new Dimension (100,100));
+            textArea_isi.setMaximumSize(new Dimension (700,200));
+            textArea_isi.setPreferredSize(new Dimension (670,200));
+            panel15.setMinimumSize(new Dimension (200,200));
+            panel15.setMaximumSize(new Dimension (800,200));
+            panel15.setPreferredSize(new Dimension (700,200));
+            panel15.add(textArea_isi);
+            panel15.setBorder(BorderFactory.createEmptyBorder(10,600,10,0));
+            msg_panel.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+            button_ok.setMinimumSize(new Dimension (30,50));
+            button_ok.setMaximumSize(new Dimension (200,50));
+            button_ok.setPreferredSize(new Dimension (100,50));
+            cancel.setMinimumSize(new Dimension (30,50));
+            cancel.setMaximumSize(new Dimension (200,50));
+            cancel.setPreferredSize(new Dimension (100,50));
+            add(panel13);
+            add(panel14);
+            add(panel15);
+            msg_panel.add(button_ok);
             panel141.add(button_ok,BorderLayout.EAST);
             panel141.add(cancel,BorderLayout.WEST);
-            panel14.add(panel141);
-            add(panel14);
+            
+            add(panel141);
             setVisible(true);
             cancel.addActionListener(this);
             button_ok.addActionListener(this);
@@ -328,6 +434,8 @@ class Panel4 extends JFrame implements ActionListener{
 			
 		}
 }
+
+//Untuk read
 class Panel5 extends JFrame implements ActionListener{
     JButton button_ok;
 	JTextField textField_to,textField_subject;
@@ -335,9 +443,11 @@ class Panel5 extends JFrame implements ActionListener{
 	String mail;
     public Panel5(String subject,String to,String isi,String from){
     	mail=from;
-    	setSize(800,600);
+    	setSize(800,450);
+        this.setLayout(null);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-    	JPanel panel14 = new JPanel(new GridLayout(4,10,5,5));
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JLabel label_to = new JLabel("From :");
         JLabel label_subject = new JLabel("Subject ");
         button_ok = new JButton("Close");
@@ -347,15 +457,50 @@ class Panel5 extends JFrame implements ActionListener{
         textField_to.setText(to);
         textField_subject.setText(subject);
         textArea_isi.setText(isi);
-        JPanel msg_panel = new JPanel(new GridLayout(2,1,5,5));
-        msg_panel.add(label_to,BorderLayout.WEST);
-        msg_panel.add(textField_to,BorderLayout.EAST);
-        msg_panel.add(label_subject,BorderLayout.WEST);
-        msg_panel.add(textField_subject,BorderLayout.EAST);
-        panel14.add(msg_panel);
-        panel14.add(textArea_isi);
-        panel14.add(button_ok);
+        textField_to.setEnabled(false);
+        textField_subject.setEnabled(false);
+        textArea_isi.setEnabled(false);
+        JSplitPane panel13 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,label_to,textField_to);
+        JSplitPane panel14 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,label_subject,textField_subject);
+        JPanel panel15 = new JPanel();
+        JPanel msg_panel = new JPanel();
+        label_to.setMinimumSize(new Dimension (75,50));
+        label_to.setMaximumSize(new Dimension (75,50));
+        label_to.setPreferredSize(new Dimension (75,50));
+        textField_to.setMinimumSize(new Dimension (30,50));
+        textField_to.setMaximumSize(new Dimension (400,50));
+        textField_to.setPreferredSize(new Dimension (200,50));
+        panel13.setMinimumSize(new Dimension (200,50));
+        panel13.setMaximumSize(new Dimension (500,50));
+        panel13.setPreferredSize(new Dimension (350,50));
+        label_subject.setMinimumSize(new Dimension (75,50));
+        label_subject.setMaximumSize(new Dimension (75,50));
+        label_subject.setPreferredSize(new Dimension (75,50));
+        textField_subject.setMinimumSize(new Dimension (30,50));
+        textField_subject.setMaximumSize(new Dimension (400,50));
+        textField_subject.setPreferredSize(new Dimension (200,50));
+        panel14.setMinimumSize(new Dimension (200,50));
+        panel14.setMaximumSize(new Dimension (500,50));
+        panel14.setPreferredSize(new Dimension (350,50));
+        panel13.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        panel14.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        textArea_isi.setMinimumSize(new Dimension (100,100));
+        textArea_isi.setMaximumSize(new Dimension (700,200));
+        textArea_isi.setPreferredSize(new Dimension (670,200));
+        panel15.setMinimumSize(new Dimension (200,200));
+        panel15.setMaximumSize(new Dimension (800,200));
+        panel15.setPreferredSize(new Dimension (700,200));
+        panel15.add(textArea_isi);
+        panel15.setBorder(BorderFactory.createEmptyBorder(10,600,10,0));
+        msg_panel.setBorder(BorderFactory.createEmptyBorder(10,100,10,100));
+        button_ok.setMinimumSize(new Dimension (30,50));
+        button_ok.setMaximumSize(new Dimension (200,50));
+        button_ok.setPreferredSize(new Dimension (100,50));
+        msg_panel.add(button_ok);
+        add(panel13);
         add(panel14);
+        add(panel15);
+        add(msg_panel);
         setVisible(true);
         button_ok.addActionListener(this);
     }
@@ -376,6 +521,7 @@ class Panel5 extends JFrame implements ActionListener{
 	}
 }
 
+//Untuk Search
 class Panelsearch extends JFrame implements ActionListener{
     JButton button_delete,open;
     Vector<Vector<Object>> data = new Vector<Vector<Object>>();
@@ -397,7 +543,7 @@ class Panelsearch extends JFrame implements ActionListener{
 		}
 		setSize(800,600);
         JPanel panel12 = new JPanel(new GridLayout(2,1,5,5));
-    	JPanel panel123 = new JPanel(new GridLayout(1,2,5,5));
+    	JPanel panel123 = new JPanel();
     	button_delete = new JButton("Delete");
     	open = new JButton("Read");
         Vector<Object> colHeads = new Vector<Object>();
@@ -423,9 +569,6 @@ class Panelsearch extends JFrame implements ActionListener{
         panel12.add(panel123);
         add(panel12);
         setVisible(true);
-//        button_panel.add(Box.createHorizontalGlue());
-//        button_panel.add(button_delete);
-//        button_panel.add(Box.createRigidArea(new Dimension(10,0)));
         open.addActionListener(this);
     }
 	@Override
