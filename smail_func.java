@@ -49,7 +49,7 @@ class smail_func {
 		stmt.close();
 	}
 	public void kirimEmail(String id_pengirim,String id_penerima,String Subject,String isi) throws SQLException{
-		String query="INSERT INTO mail(ID_Pengirim,ID_Penerima,Subject,Isi,E_status,Waktu_terima) VALUES(?,?,?,?,unread,date('Y-m-d H:i:s'))";
+		String query="INSERT INTO mail(ID_Pengirim,ID_Penerima,Subject,Isi,E_status,Waktu_terima) VALUES(?,?,?,?,unread,CURRENT_TIMESTAMP)";
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, id_pengirim);
 		stmt.setString(2, id_penerima);
@@ -135,9 +135,9 @@ class smail_func {
 		String query = "DELETE FROM mail Where ID_Pengirim = '"+ID_Pengirim+"' and ID_Penerima = '"+ID_Penerima+"' and Subjects = '"+Subjects+"' and isi = '"+isi+"'";
 		stmt.execute(query);
 	}
-	public void reads(String id)throws SQLException{
+	public void reads(String id_pene,String isi,String subj,String pengirim)throws SQLException{
 		stmt=conn.createStatement();
-		String query = "UPDATE users SET E_Status = read WHERE Email = '"+id+"'";
+		String query = "UPDATE mail SET E_Status = read WHERE ID_Penerima = '"+id_pene+"' and ID_Pengirim = '"+pengirim+"' and isi = '"+isi+"' and Subjects = '"+subj+"'";
 		stmt.execute(query);
 		stmt.close();
 	}
